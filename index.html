@@ -1,13 +1,48 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="img/logo.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Widi's Cookies</title>
+</head>
     <body>
-        <div>
-            <img id="image" src="" />
+        <div id="judul" class="flex justify-center pt-24 sm:pt-36 md:pt-40 lg:pt-56">
+            <h1 class="text-4xl font-black text-gray-900">Widi's Cookies</h1>
         </div>
+        <div class="pt-10 pl-16">
+            <div class="flex items-center">
+                <img id="image1" src="" class="max-w-[150px] shadow-lg"/>
+                <div class="pl-6">
+                    <h1 id="nama1" class="text-2xl font-bold text-gray-900"></h1>
+                    <h1 id="harga1" class="text-lg font-medium text-gray-900"></h1>
+                </div>
+            </div>
+            <div class="flex items-center">
+                <img id="image2" src="" class="max-w-[150px] pt-8 shadow-lg"/>
+                <div class="pl-6">
+                    <h1 id="nama2" class="text-2xl font-bold text-gray-900"></h1>
+                    <h1 id="harga2" class="text-lg font-medium text-gray-900"></h1>
+                </div>
+            </div>
+        </div>
+
         <script>
+            var id = 1
+            let imgList = [
+                ["img/nastar.jpg", "Nastar Nanas", "Rp 20.000"], 
+                ["img/nastar2.jpg", "Nastar Keju", "Rp 15.000"],
+            ]
             function show() {
-                let image = document.getElementById("image");
-                image.src = "img/kue.png";
+                let image = document.getElementById("image"+id);
+                let nama = document.getElementById("nama"+id);
+                let harga = document.getElementById("harga"+id);
+                image.src = imgList[id-1][0];
+                nama.innerHTML = imgList[id-1][1];
+                harga.innerHTML = imgList[id-1][2];
+                id++
             }
 
             document.addEventListener("click", show);
