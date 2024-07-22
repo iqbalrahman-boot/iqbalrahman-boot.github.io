@@ -47,7 +47,7 @@
   };
 
   // fallback to the application store on mobile devices
-  if (isMobile.ios() && urls.deepLink && urls.iosStoreLink) {
+  if (isMobile.ios() && urls.deepLink) {
     iosLaunch();
   } else if (isMobile.android() && androidPackageName) {
     androidLaunch();
@@ -56,40 +56,36 @@
   }
 
   function launchWekitApproach(url, fallback) {
-    document.location = url;
-    setTimeout(function() {
+      document.location = url;
+      setTimeout(function() {
         console.log('Fallback to:', fallback);
         document.location = fallback;
-    }, 1000); // Timeout diperpanjang menjadi 1000ms
-}
+      }, 1000); // Perpanjang durasi timeout menjadi 1000ms atau lebih
+    }
 
-  function launchIframeApproach(url, fallback) {
-    var iframe = document.createElement('iframe');
-    iframe.style.border = 'none';
-    iframe.style.width = '1px';
-    iframe.style.height = '1px';
-    iframe.onload = function() {
+    function launchIframeApproach(url, fallback) {
+      var iframe = document.createElement('iframe');
+      iframe.style.border = 'none';
+      iframe.style.width = '1px';
+      iframe.style.height = '1px';
+      iframe.onload = function() {
         document.location = url;
-    };
-    iframe.src = url;
+      };
+      iframe.src = url;
 
-    window.onload = function() {
+      window.onload = function() {
         document.body.appendChild(iframe);
         setTimeout(function() {
-            console.log('Fallback to:', fallback);
-            window.location = fallback;
-        }, 1000); // Timeout diperpanjang menjadi 1000ms
-    };
+          window.location = fallback;
+        }, 1000); // Perpanjang durasi timeout menjadi 1000ms atau lebih
+      };
+    }
   }
 
   function iosLaunch() {
-    console.log('Launching iOS deep link:', urls.deepLink);
-    document.location = urls.deepLink;
-    setTimeout(function() {
-        console.log('Fallback to:', urls.iosStoreLink || urls.fallback);
-        document.location = urls.iosStoreLink || urls.fallback;
-    }, 1000); // Timeout diperpanjang menjadi 1000ms
-}
+      console.log('Launching iOS deep link:', urls.deepLink);
+      document.location = urls.deepLink;
+    }
 
   function androidLaunch() {
     if (ua.match(/Chrome/)) {
@@ -110,7 +106,7 @@ if (typeof module !== 'undefined') {
     <script type="text/javascript">
         var options = {
         fallback: 'https://play.google.com/store/apps/details?id=com.gromart.app',
-        url: 'group://invitation/6669a3b31f0918a0025abe866/tCggAp7pXq',
+        url: 'group://invitation/668ce8887ff6fd0025838d90/o2P2AuOwYJ',
         ios_store_link: '',
         android_package_name: 'com.gromart.app'
       };
