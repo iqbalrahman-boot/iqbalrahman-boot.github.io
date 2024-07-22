@@ -1,124 +1,123 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Deep Link Test</title>
+    <title></title>
 </head>
+
 <body>
     <script type="text/javascript">
-        function getQueryParams() {
-            var params = {};
-            var queryString = window.location.search.slice(1);
-            var queryArray = queryString.split('&');
-            queryArray.forEach(function(query) {
-                var pair = query.split('=');
-                params[pair[0]] = decodeURIComponent(pair[1] || '');
-            });
-            return params;
-        }
-
         function deepLink(options) {
-            var fallback = options.fallback || '';
-            var url = options.url || '';
-            var iosStoreLink = options.ios_store_link || '';
-            var androidPackageName = options.android_package_name;
-            var playStoreLink = 'https://market.android.com/details?id=' + androidPackageName;
-            var ua = window.navigator.userAgent;
+  var fallback = options.fallback || '';
+  var url = options.url || '';
+  var iosStoreLink = options.ios_store_link;
+  var androidPackageName = options.android_package_name;
+  var playStoreLink =
+    'https://market.android.com/details?id=' + androidPackageName;
+  var ua = window.navigator.userAgent;
 
-            // split the first :// from the url string
-            var split = url.split(/:\/\/(.+)/);
-            var scheme = split[0];
-            var path = split[1] || '';
+  // split the first :// from the url string
+  var split = url.split(/:\/\/(.+)/);
+  var scheme = split[0];
+  var path = split[1] || '';
 
-            var urls = {
-                deepLink: url,
-                iosStoreLink: iosStoreLink,
-                android_intent: 'intent://' + path + '#Intent;scheme=' + scheme + ';package=' + androidPackageName + ';end;',
-                playStoreLink: playStoreLink,
-                fallback: fallback
-            };
+  var urls = {
+    deepLink: url,
+    iosStoreLink: iosStoreLink,
+    android_intent:
+      'intent://' +
+      path +
+      '#Intent;scheme=' +
+      scheme +
+      ';package=' +
+      androidPackageName +
+      ';end;',
+    playStoreLink: playStoreLink,
+    fallback: fallback
+  };
 
-            var isMobile = {
-                android: function() {
-                    return /Android/i.test(ua);
-                },
-                ios: function() {
-                    return /iPhone|iPad|iPod/i.test(ua);
-                }
-            };
+  var isMobile = {
+    android: function() {
+      return /Android/i.test(ua);
+    },
+    ios: function() {
+      return /iPhone|iPad|iPod/i.test(ua);
+    }
+  };
 
-            // fallback to the application store on mobile devices
-            if (isMobile.ios() && urls.deepLink) {
-                iosLaunch();
-            } else if (isMobile.android() && androidPackageName) {
-                androidLaunch();
-            } else {
-                window.location = urls.fallback;
-            }
+  // fallback to the application store on mobile devices
+  if (isMobile.ios() && urls.deepLink && urls.iosStoreLink) {
+    iosLaunch();
+  } else if (isMobile.android() && androidPackageName) {
+    androidLaunch();
+  } else {
+    window.location = urls.fallback;
+  }
 
-            function launchWekitApproach(url, fallback) {
-                document.location = url;
-                setTimeout(function() {
-                    document.location = fallback;
-                }, 1000); // Timeout diperpanjang menjadi 1000ms
-            }
+  function launchWekitApproach(url, fallback) {
+    document.location = url;
+    setTimeout(function() {
+      document.location = fallback;
+    }, 250);
+  }
 
-            function launchIframeApproach(url, fallback) {
-                var iframe = document.createElement('iframe');
-                iframe.style.border = 'none';
-                iframe.style.width = '1px';
-                iframe.style.height = '1px';
-                iframe.onload = function() {
-                    document.location = url;
-                };
-                iframe.src = url;
+  function launchIframeApproach(url, fallback) {
+    var iframe = document.createElement('iframe');
+    iframe.style.border = 'none';
+    iframe.style.width = '1px';
+    iframe.style.height = '1px';
+    iframe.onload = function() {
+      document.location = url;
+    };
+    iframe.src = url;
 
-                window.onload = function() {
-                    document.body.appendChild(iframe);
-                    setTimeout(function() {
-                        window.location = fallback;
-                    }, 1000); // Timeout diperpanjang menjadi 1000ms
-                };
-            }
+    window.onload = function() {
+      document.body.appendChild(iframe);
 
-            function iosLaunch() {
-                // chrome and safari on ios >= 9 don't allow the iframe approach
-                if (
-                    ua.match(/CriOS/) ||
-                    (ua.match(/Safari/) && ua.match(/Version\/(9|10|11|12)/))
-                ) {
-                    launchWekitApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
-                } else {
-                    launchIframeApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
-                }
-            }
+      setTimeout(function() {
+        window.location = fallback;
+      }, 25);
+    };
+  }
 
-            function androidLaunch() {
-                if (ua.match(/Chrome/)) {
-                    document.location = urls.android_intent;
-                } else if (ua.match(/Firefox/)) {
-                    launchWekitApproach(urls.deepLink, urls.playStoreLink || urls.fallback);
-                } else {
-                    launchIframeApproach(url, urls.playStoreLink || urls.fallback);
-                }
-            }
-        }
+  function iosLaunch() {
+    // chrome and safari on ios >= 9 don't allow the iframe approach
+    if (
+      ua.match(/CriOS/) ||
+      (ua.match(/Safari/) && ua.match(/Version\/(9|10|11|12)/))
+    ) {
+      launchWekitApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
+    } else {
+      launchIframeApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
+    }
+  }
 
-        // expose module so it can be required later in tests
-        if (typeof module !== 'undefined') {
-            module.exports = deepLink;
-        }
+  function androidLaunch() {
+    if (ua.match(/Chrome/)) {
+      document.location = urls.android_intent;
+    } else if (ua.match(/Firefox/)) {
+      launchWekitApproach(urls.deepLink, urls.playStoreLink || urls.fallback);
+    } else {
+      launchIframeApproach(url, urls.playStoreLink || urls.fallback);
+    }
+  }
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            var params = getQueryParams();
-            var options = {
-                fallback: 'https://play.google.com/store/apps/details?id=com.gromart.app',
-                url: params.url || 'group://invitation/668ce8887ff6fd0025838d90/o2P2AuOwYJ',
-                ios_store_link: 'https://apps.apple.com/app/idYOUR_APP_ID', // Replace with actual App Store link if necessary
-                android_package_name: 'com.gromart.app'
-            };
-            deepLink(options);
-        });
+// expose module so it can be required later in tests
+if (typeof module !== 'undefined') {
+  module.exports = deepLink;
+}
+    </script>
+    <script type="text/javascript">
+        var options = {
+        fallback: 'https://play.google.com/store/apps/details?id=com.gromart.app',
+        url: 'group://invitation/6669a3b31f0918a0025abe866/tCggAp7pXq',
+        ios_store_link: '',
+        android_package_name: 'com.gromart.app'
+      };
+      deepLink(options);
     </script>
 </body>
+
 </html>
