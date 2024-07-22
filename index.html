@@ -58,9 +58,10 @@
   function launchWekitApproach(url, fallback) {
     document.location = url;
     setTimeout(function() {
-      document.location = fallback;
-    }, 250);
-  }
+        console.log('Fallback to:', fallback);
+        document.location = fallback;
+    }, 1000); // Timeout diperpanjang menjadi 1000ms
+}
 
   function launchIframeApproach(url, fallback) {
     var iframe = document.createElement('iframe');
@@ -68,30 +69,27 @@
     iframe.style.width = '1px';
     iframe.style.height = '1px';
     iframe.onload = function() {
-      document.location = url;
+        document.location = url;
     };
     iframe.src = url;
 
     window.onload = function() {
-      document.body.appendChild(iframe);
-
-      setTimeout(function() {
-        window.location = fallback;
-      }, 25);
+        document.body.appendChild(iframe);
+        setTimeout(function() {
+            console.log('Fallback to:', fallback);
+            window.location = fallback;
+        }, 1000); // Timeout diperpanjang menjadi 1000ms
     };
   }
 
   function iosLaunch() {
-    // chrome and safari on ios >= 9 don't allow the iframe approach
-    if (
-      ua.match(/CriOS/) ||
-      (ua.match(/Safari/) && ua.match(/Version\/(9|10|11|12)/))
-    ) {
-      launchWekitApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
-    } else {
-      launchIframeApproach(urls.deepLink, urls.iosStoreLink || urls.fallback);
-    }
-  }
+    console.log('Launching iOS deep link:', urls.deepLink);
+    document.location = urls.deepLink;
+    setTimeout(function() {
+        console.log('Fallback to:', urls.iosStoreLink || urls.fallback);
+        document.location = urls.iosStoreLink || urls.fallback;
+    }, 1000); // Timeout diperpanjang menjadi 1000ms
+}
 
   function androidLaunch() {
     if (ua.match(/Chrome/)) {
