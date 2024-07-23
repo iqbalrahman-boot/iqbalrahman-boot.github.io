@@ -5,7 +5,6 @@
       {
         "appID": "VAT28T74M3.id.co.nexsoft.ios.GroUp",
         "paths": [
-          "/tara/v5/invitation-group/*",
           "/invitation/*"
         ]
       }
